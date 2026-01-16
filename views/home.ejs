@@ -9,18 +9,29 @@
 <body>
     <%- include('./partials/nav') %>
 
-        <div class="container mt-3">
+       <% if(locals.user){ %>
+
+                <div class="container mt-3 row">
             <% blogs.forEach(blog=> { %>
-                <div class="card" style="width: 18rem;">
+                <div class="col">
+                    <div class="card" style="width: 18rem;">
                     <img src="<%= blog.coverImageURL %>" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h5 class="card-title"><%= blog.title %></h5>
+                        <h6 class="createDate">
+                            <%let str = blog.createdAt%>
+
+                            <%= str %>
+                        </h6>
                     
                         <a href="/blog/<%= blog._id %>" class="btn btn-primary">View</a>
                     </div>
                 </div>
+                </div>
                 <%}) %>
         </div>
+
+        <% } %>
 
         <%- include('./partials/script') %>
 </body>
