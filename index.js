@@ -1,3 +1,5 @@
+require("dotenv").config()
+
 const express = require("express")
 const path = require("path")
 const userRouter = require("./routes/user.routes.js")
@@ -7,11 +9,10 @@ const { connectDB } = require("./db_connection.js")
 const { checkForAuthenticationCookie } = require("./middlewares/authentication.js")
 const Blog = require('./models/blog.models.js')
 
-
 const app = express();
-const PORT = 8002;
+const PORT = process.env.PORT || 8002;
 
-connectDB(`mongodb+srv://SatyamGupta:satyam123@basicbackendproject.zebfuft.mongodb.net/blogify`)
+connectDB(`${process.env.MONGO_URL}`)
 .then(() =>{
     let port = PORT
     app.listen(port, () => {
@@ -33,8 +34,7 @@ app.use(express.static(path.resolve('./public')))
 
 app.get('/',async(req,res) =>{
     if(!req.user) return res.render("home")
-    const Id = req.user._id
-    const allBlogs = await Blog.find({createdBy: Id}).sort({"createdAt": -1})
+    const allBlogs = await Blog.find({}).sort({"createdAt": -1})
     res.render("home",{
         user: req.user,
         blogs: allBlogs
@@ -44,4 +44,3 @@ app.get('/',async(req,res) =>{
 app.use('/user', userRouter)
 app.use('/blog', blogRouter)
 
-app.listen(PORT, () => console.log(`Server Started at PORT: ${PORT}`))
